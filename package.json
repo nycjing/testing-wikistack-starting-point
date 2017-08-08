@@ -13,6 +13,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
+    "chai-spies": "^0.7.1",
     "express": "^4.15.4",
     "marked": "^0.3.6",
     "morgan": "^1.8.2",

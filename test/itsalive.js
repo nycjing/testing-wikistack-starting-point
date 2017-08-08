@@ -1,4 +1,7 @@
 var expect = require('chai').expect;
+var chai = require('chai');
+var spies = require('chai-spies');
+chai.use(spies);
 
 function done(){
     return console.log('Done' + err);
@@ -16,15 +19,6 @@ describe('+', function () {
         expect(result).to.equal(4);
     });
 
-    // it('sums a negative and a positive', function () {
-    //     var result = negNum + posNum;
-    //     expect(result).to.equal(50);
-    // });
-    // it('is commutative', function () {
-    //     var resultA = negNum + posNum,
-    //         resultB = posNum + negNum;
-    //     expect(resultA).to.equal(resultB);
-    // });
 });
 
 describe('setTimeout function', function () {
@@ -42,3 +36,30 @@ describe('setTimeout function', function () {
 
     });
 });
+
+
+describe ('spy', function (){
+    it ('envoke a function on each element', function(){
+       var arr = ['x','y','z'];
+        function logNth (val, idx) {
+        console.log('Logging elem #'+idx+':', val);
+    }
+     logNth = chai.spy(logNth);
+     arr.forEach(logNth);
+     expect(logNth).to.have.been.called.exactly(arr.length);
+    });
+ });
+
+
+ describe ('testing max function', function(){
+    Math.max = function (a, b) {
+        if (a > b) return a;
+    else return b;
+    };
+
+    it('returns the larger of two numbers', function () {
+    var larger = Math.max(6,5);
+    expect(larger).to.equal(6);
+    });
+
+ })
