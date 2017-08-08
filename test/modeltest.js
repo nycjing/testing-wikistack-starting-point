@@ -4,6 +4,7 @@ var expect = require('chai').expect;
 var chai = require('chai');
 var spies = require('chai-spies');
 var marked = require('marked');
+var Promise = require('bluebird');
 chai.use(spies);
 
 describe('Testing Page model', function (done) {
@@ -24,15 +25,15 @@ describe('Testing Page model', function (done) {
                 status:"open",
                 tags:['life','fun']
             })
-        })
+        });
         describe('Virtal 1: route', function () {
-            it('returns the url_name prepended by "/wiki/"',function(){
+            it('returns the url_name prepended by "/wiki/"', function(){
                 var result = page.route;
                 expect(result).to.equal("/wiki/our_page");
             });
         });
         describe('Virtal 2: renderedContent', function () {
-            it('converts the markdown-formatted content into HTML',function(){
+            it('converts the markdown-formatted content into HTML', function(){
                 var result = page.renderedContent;
                 expect(result).to.equal(marked('# life is fun'));
 
@@ -41,9 +42,33 @@ describe('Testing Page model', function (done) {
     });
 
     describe('Class methods', function () {
+
+        before(function (done) {
+
+            Page.create({
+            title: 'foo',
+            content: 'bar',
+            tags: ['foo', 'bar']
+        })
+        .then(function () {
+            done();
+        })
+        .catch(done);
+        });
+
         describe('findByTag', function () {
-            it('gets pages with the search tag');
-            it('does not get pages without the search tag');
+            it('gets pages with the search tag', function (done) {
+            Page.findByTag('bar')
+            .then(function (pages) {
+                expect(pages).to.have.lengthOf(1);
+                done();
+            })
+            .catch(done);
+            });
+
+            it('does not get pages without the search tag', function(){
+
+            });
         });
     });
 
