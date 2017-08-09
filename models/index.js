@@ -79,7 +79,7 @@ Page.prototype.findSimilar = function () {
   return Page.findAll({
     where: {
       tags: {
-        $overlap: this.tags
+        $contains: this.tags
       },
       id: {
         $ne: this.id
