@@ -57,7 +57,6 @@ describe('Testing Page model', function (done) {
             return Promise.all(pageData.map(pageDatum => {
               return Page.create(pageDatum)
             }))
-            // return Page.bulkCreate(pageData) // I like this —GLL
         })
 
         describe('findByTag', function () {
@@ -89,27 +88,26 @@ describe('Testing Page model', function (done) {
             const pageData = [
                 {title: 'Sunrise', content: 'I never see this', tags: ['goo']},
                 {title: 'Daytime', content: 'Busy', tags: ['indoors','goo']},
-                {title: 'Sunset', content: 'Beautiful', tags: ['sun','goo']},
+                {title: 'Sunset', content: 'Beautiful', tags: ['sun']},
             ];
             var page;
             beforeEach('put pages into db', () => {
                 return Promise.all(pageData.map(pageDatum => {
-                    return Page.create(pageDatum)
-                }))
-        .then(pages=>{
-               return page = pages[0];
-
-
-        })
-
-        })
+                        return Page.create(pageDatum)
+                    }))
+                    .then(pages=>{
+                        page = pages[0];
+                    })
+                })
 
             it('never gets itself', function () {
-
                 return page.findSimilar()
-                    .then(pages=>{
-                    console.log('what is pages ID',pages.id,'wahts is pages ID',page.id );
-                    expect(pages).to.not.have.property('id', page.id)
+                    .then((pages)=>{
+                    var matching=page.id;
+                    pages.map(page=>{
+                    console.log('what is pages ID',page.id,'whats not to matching',matching );
+                    expect(page).to.not.have.property('id', matching);
+                    })
 
             })
             });
@@ -117,14 +115,24 @@ describe('Testing Page model', function (done) {
             it('gets other pages with any common tags', function () {
                 return page.findSimilar()
                     .then(pages=>{
-                    console.log('what is pages tags',pages.tags,'wahts is pages tags',page.tags );
-                    var result = pages.tags;
-                console.log('------',result);
-                expect(pages.tags).to.have.members(page.tags);
+                    var matching=page.tags;
+                    pages.map(pg=>{
+                        expect(pg.tags).to.include.members(matching);
+                    })
+
             })
             });
 
-            it('does not get other pages without any common tags');
+            it('does not get other pages without any common tags', function () {
+                return page.findSimilar()
+                    .then(pages=>{
+                    var matching=page.tags;
+                pages.map(pg=>{
+                    expect(pg.tags).to.not.include.members(['sun']);
+            })
+
+            })
+            });
         });
     });
 
